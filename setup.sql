@@ -28,7 +28,6 @@ ls @GIT_INTEGRATION_FOR_HANDSON/branches/main;
 
 -- Githubからファイルを持ってくる
 COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/data/;
-COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2/snow_retail_handson2.sql;
 COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.SEMANTIC_MODEL_STAGE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2/sales_analysis_model.yaml;
 
 -- Notebookの作成
@@ -37,3 +36,9 @@ CREATE OR REPLACE NOTEBOOK cortex_handson_part1
     MAIN_FILE = 'cortex_handson_seminar_part1.ipynb'
     QUERY_WAREHOUSE = COMPUTE_WH
     WAREHOUSE = COMPUTE_WH;
+
+-- Streamlit in Snowflakeの作成
+CREATE OR REOLACE STREAMLIT sis_snowretail_analysis_dev
+    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
+    MAIN_FILE = 'sis_snowretail_analysis_dev.py'
+    QUERY_WAREHOUSE = COMPUTE_WH;
