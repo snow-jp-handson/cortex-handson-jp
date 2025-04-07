@@ -1,5 +1,10 @@
+// Step1: テーブル作成 //
 -- ロールの指定
 USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+
+
+// Step2: 各種オブジェクトの作成 //
 
 -- データベースの作成
 CREATE OR REPLACE DATABASE SNOWRETAIL_DB;
@@ -11,6 +16,9 @@ USE SCHEMA SNOWRETAIL_DB.SNOWRETAIL_SCHEMA;
 -- ステージの作成
 CREATE OR REPLACE STAGE SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE;
 CREATE OR REPLACE STAGE SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.SEMANTIC_MODEL_STAGE;
+
+
+// Step3: 公開されているGitからデータとスクリプトを取得 //
 
 -- Git連携のため、API統合を作成する
 CREATE OR REPLACE API INTEGRATION git_api_integration
@@ -30,6 +38,9 @@ ls @GIT_INTEGRATION_FOR_HANDSON/branches/main;
 COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/data/;
 COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.SEMANTIC_MODEL_STAGE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2/sales_analysis_model.yaml;
 
+
+// Step4: NotebookとStreamlitを作成 //
+
 -- Notebookの作成
 CREATE OR REPLACE NOTEBOOK cortex_handson_part1
     FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson1
@@ -38,7 +49,7 @@ CREATE OR REPLACE NOTEBOOK cortex_handson_part1
     WAREHOUSE = COMPUTE_WH;
 
 -- Streamlit in Snowflakeの作成
-CREATE OR REOLACE STREAMLIT sis_snowretail_analysis_dev
-    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
+CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_dev
+    ROOT_LOCATION = @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
     MAIN_FILE = 'sis_snowretail_analysis_dev.py'
     QUERY_WAREHOUSE = COMPUTE_WH;
