@@ -50,6 +50,6 @@ CREATE OR REPLACE NOTEBOOK cortex_handson_part1
 
 -- Streamlit in Snowflakeの作成
 CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_dev
-    ROOT_LOCATION = @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
+    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
     MAIN_FILE = 'sis_snowretail_analysis_dev.py'
     QUERY_WAREHOUSE = COMPUTE_WH;
