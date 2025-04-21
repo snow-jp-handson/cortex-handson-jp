@@ -35,21 +35,43 @@ CREATE OR REPLACE GIT REPOSITORY GIT_INTEGRATION_FOR_HANDSON
 ls @GIT_INTEGRATION_FOR_HANDSON/branches/main;
 
 -- Githubからファイルを持ってくる
-COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/data/;
-COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.SEMANTIC_MODEL_STAGE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2/sales_analysis_model.yaml;
-
+COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE FROM @GIT_INTEGRATION_FOR_HANDSON/pri_20250415/main/data/;
+COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.SEMANTIC_MODEL_STAGE FROM @GIT_INTEGRATION_FOR_HANDSON/branches/pri_20250415/handson2/sales_analysis_model.yaml;
+COPY FILES INTO @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE/streamlit/ FROM @GIT_INTEGRATION_FOR_HANDSON/branches/pri_20250415/handson2/;
 
 // Step4: NotebookとStreamlitを作成 //
 
 -- Notebookの作成
 CREATE OR REPLACE NOTEBOOK cortex_handson_part1
-    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson1
+    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/pri_20250415/handson1
     MAIN_FILE = 'cortex_handson_seminar_part1.ipynb'
+    QUERY_WAREHOUSE = COMPUTE_WH
+    WAREHOUSE = COMPUTE_WH;
+    
+-- Notebookの作成
+CREATE OR REPLACE NOTEBOOK cortex_handson_part2
+    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/pri_20250415/handson2
+    MAIN_FILE = 'cortex_handson_setup_part2.ipynb'
     QUERY_WAREHOUSE = COMPUTE_WH
     WAREHOUSE = COMPUTE_WH;
 
 -- Streamlit in Snowflakeの作成
-CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_dev
-    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson2
-    MAIN_FILE = 'sis_snowretail_analysis_dev.py'
+CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_short
+    FROM @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE/streamlit/
+    MAIN_FILE = 'sis_snowretail_analysis_short.py'
+    QUERY_WAREHOUSE = COMPUTE_WH;
+
+CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_only
+    FROM @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE/streamlit/
+    MAIN_FILE = 'sis_snowretail_analysis_only.py'
+    QUERY_WAREHOUSE = COMPUTE_WH;
+
+CREATE OR REPLACE STREAMLIT sis_snowretail_rag_only
+    FROM @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE/streamlit/
+    MAIN_FILE = 'sis_snowretail_rag_only.py'
+    QUERY_WAREHOUSE = COMPUTE_WH;
+  
+CREATE OR REPLACE STREAMLIT sis_snowretail_analysis_voice_only
+    FROM @SNOWRETAIL_DB.SNOWRETAIL_SCHEMA.FILE/streamlit/
+    MAIN_FILE = 'sis_snowretail_analysis_voice_only.py'
     QUERY_WAREHOUSE = COMPUTE_WH;
