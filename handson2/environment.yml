@@ -4,7 +4,7 @@ channels:
 dependencies:
   - python=3.11.*
   - snowflake-snowpark-python=1.29.1
-  - streamlit=1.42.0
+  - streamlit=1.39.0
   - plotly=5.24.1
   - snowflake.core=1.0.5
   - snowflake-ml-python=1.8.0
